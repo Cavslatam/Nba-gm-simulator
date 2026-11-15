@@ -1,527 +1,545 @@
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA GM Simulator</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NBA GM Simulator 2026-27</title>
 <style>
-:root{--bg:#080d17;--panel:#111b2b;--panel2:#18263b;--blue:#2878ff;--text:#f4f7fc;--muted:#9aabc2;--border:#263750}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
-header{background:#0c1422;border-bottom:1px solid var(--border);padding:16px 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
-.brand{font-size:24px;font-weight:900}
-.brand span{color:var(--blue)}
-.season{color:#b7c6da;border:1px solid var(--border);border-radius:20px;padding:8px 12px;font-size:11px}
-main{max-width:1300px;margin:auto;padding:26px 5%}
-.hero{background:linear-gradient(115deg,#17345c,#101a2b 65%,#172943);border:1px solid #294a76;border-radius:18px;padding:32px;margin-bottom:28px}
-.eyebrow{color:#80b4ff;font-size:11px;font-weight:bold;letter-spacing:2px}
-h1{font-size:clamp(30px,5vw,48px);margin:12px 0}
-.hero p{color:#c3d1e5;max-width:650px;line-height:1.6}
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:26px 0 15px}
-h2{font-size:21px;margin:0}
-.count{font-size:12px;color:var(--muted)}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-button,input{font:inherit}
-button{border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:9px;padding:10px 14px;cursor:pointer;font-weight:bold}
-button:hover{border-color:var(--blue)}
-button.active,.primary{background:var(--blue);border-color:var(--blue)}
-.search{width:100%;max-width:340px;background:var(--panel);color:white;border:1px solid var(--border);border-radius:9px;padding:11px 13px}
-.teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:13px}
-.team{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:15px 10px;text-align:center;cursor:pointer;min-height:180px}
-.team:hover{border-color:#5795ff;transform:translateY(-2px)}
-.team-logo{width:64px;height:64px;object-fit:contain;display:block;margin:0 auto 9px}
-.team-name{font-size:13px;font-weight:bold}
-.team-conf{font-size:10px;color:var(--muted);margin-top:6px}
-.team-titles{font-size:11px;color:#d9e4f3;margin-top:6px;font-weight:bold}
-.team-stars{font-size:14px;letter-spacing:2px;color:#f6c453;margin-top:7px}
-.team-stars-label{font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:2px}
-.panel{display:none;background:linear-gradient(125deg,#172a45,#101a2a);border:1px solid #355780;border-radius:16px;padding:20px;margin-top:22px}
-.panel.show{display:block}
-.detail-top{display:flex;align-items:center;gap:15px;margin-bottom:18px}
-.detail-logo{width:76px;height:76px;object-fit:contain}
-.muted{color:var(--muted);font-size:12px}
-.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.info{background:#0d1726;border:1px solid var(--border);border-radius:10px;padding:14px}
-.info h3{color:#83b5ff;font-size:11px;margin:0 0 8px;letter-spacing:1px}
-.info p{font-size:13px;line-height:1.6;color:#d4deec;margin:0}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:680px;text-align:left;font-size:13px}
-th,td{padding:11px 9px;border-bottom:1px solid var(--border)}
-th{color:#9fc5ff;font-size:11px;letter-spacing:.5px}
-td img{width:38px;height:38px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-right:8px}
-.ovr{font-weight:bold;color:#fff}
-.attributes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px}
-.attr{background:#0d1726;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:12px;display:flex;justify-content:space-between;gap:8px}
-.notice{margin-top:24px;background:#101a2a;border:1px solid var(--border);border-radius:11px;padding:15px;color:var(--muted);font-size:12px;line-height:1.6}
-footer{text-align:center;color:var(--muted);padding:24px;font-size:11px;margin-top:35px}
-@media(max-width:650px){
-header{padding:13px 4%}
-.brand{font-size:20px}
-main{padding:18px 4%}
-.hero{padding:23px 18px}
-.teams{grid-template-columns:repeat(2,minmax(0,1fr))}
-.cards{grid-template-columns:1fr}
-.panel{padding:15px}
-}
-.career-panel{display:none;margin-top:22px;background:linear-gradient(125deg,#172a45,#101a2a);border:1px solid #355780;border-radius:16px;padding:20px}
-.career-panel.show{display:block}
-.career-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:16px}
-.career-stat{background:#0d1726;border:1px solid var(--border);border-radius:10px;padding:14px}
-.career-stat small{display:block;color:var(--muted);font-size:10px;letter-spacing:1px;margin-bottom:8px}
-.career-stat strong{font-size:17px}
-.career-goal{margin-top:15px;padding:14px;background:#0d1726;border-left:3px solid var(--blue);border-radius:0 9px 9px 0;color:#d4deec;font-size:13px;line-height:1.6}
-.career-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
-.career-actions button:disabled{opacity:.55;cursor:not-allowed}
+:root{--bg:#080e19;--panel:#121e30;--panel2:#1b2c43;--blue:#2878ff;--text:#f4f7fc;--muted:#9aabc2;--border:#293c56;--green:#35c98a;--red:#ed6262;--gold:#f4c65e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#0c1524;border-bottom:1px solid var(--border);padding:15px 5%;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:23px;font-weight:900}.brand span{color:var(--blue)}
+main{max-width:1400px;margin:auto;padding:22px 4%}
+.hero,.panel{background:linear-gradient(120deg,#18345a,#111c2d);border:1px solid #315078;border-radius:14px;padding:22px;margin-bottom:17px}
+.eyebrow{font-size:10px;letter-spacing:2px;color:#82b8ff;font-weight:bold}
+h1{font-size:clamp(28px,5vw,42px);margin:10px 0}h2{font-size:20px;margin:0 0 14px}h3{font-size:14px;margin:0 0 12px}
+p{line-height:1.5}.muted{color:var(--muted);font-size:12px}
+button,input,select{font:inherit}button{background:var(--panel2);color:white;border:1px solid var(--border);border-radius:8px;padding:10px 13px;cursor:pointer;font-weight:bold}
+button:hover{border-color:var(--blue)}button.primary{background:var(--blue);border-color:var(--blue)}button.danger{background:#642d35}
+button:disabled{opacity:.4;cursor:not-allowed}
+input,select{background:#0b1524;color:white;border:1px solid var(--border);border-radius:8px;padding:10px;max-width:100%}
+.toolbar,.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:10px}.tabs button{white-space:nowrap}.tabs button.active{background:var(--blue)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.card,.box{background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:15px}
+.team-card{text-align:center;min-height:105px;cursor:pointer}.team-card strong{display:block;margin:8px 0}
+.stat{font-size:25px;font-weight:bold}.stat-label{font-size:10px;color:var(--muted);margin-bottom:7px;letter-spacing:1px}
+.badge{display:inline-block;background:#243d5c;color:#c4dcff;padding:5px 9px;border-radius:20px;font-size:10px}
+.good{color:var(--green)}.bad{color:var(--red)}.gold{color:var(--gold)}
+.progress{height:7px;background:#26354a;border-radius:9px;overflow:hidden;margin-top:8px}.progress span{height:100%;display:block;background:var(--blue)}
+.view{display:none}.view.active{display:block}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:580px;font-size:12px}
+th,td{padding:11px 9px;border-bottom:1px solid var(--border);text-align:left}
+th{color:#9fc5ff;font-size:10px}
+.notice{padding:12px;background:#0b1524;border-radius:9px;color:var(--muted);font-size:12px;line-height:1.6}
+.score{font-size:28px;font-weight:bold;margin:12px 0}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:11px}
+@media(max-width:600px){header{padding:12px 4%}main{padding:15px 3%}.hero,.panel{padding:15px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
-
-<header>
-<div class="brand">NBA <span>GM</span></div>
-<div class="season">TEMPORADA 2026-27</div>
-</header>
-
+<header><div class="brand">NBA <span>GM</span></div><span class="badge">TEMPORADA 2026-27</span></header>
 <main>
 <section class="hero">
-<div class="eyebrow">TU FRANQUICIA. TUS DECISIONES.</div>
-<h1>Construye tu dinastía.</h1>
-<p>Elige una de las 30 franquicias NBA y consulta su plantilla, valoraciones, potencial, arquetipos y atributos disponibles en la base de datos del simulador.</p>
+ <div class="eyebrow">FRONT OFFICE SIMULATOR</div>
+ <h1>Construye tu dinastía.</h1>
+ <p>Administra tu franquicia, gestiona la plantilla, negocia traspasos y compite por el campeonato.</p>
 </section>
 
-<div class="section-head">
-<h2>Selecciona tu franquicia</h2>
-<span class="count" id="teamCount">30 equipos</span>
-</div>
-
-<div class="toolbar">
-<button class="filter active" data-filter="All">Todos</button>
-<button class="filter" data-filter="East">Conferencia Este</button>
-<button class="filter" data-filter="West">Conferencia Oeste</button>
-</div>
-
-<div class="toolbar">
-<input class="search" id="search" type="search" placeholder="Buscar franquicia..." autocomplete="off">
-</div>
-
-<section class="teams" id="teams"></section>
-
-<section class="panel" id="teamPanel">
-<div class="detail-top">
-<img class="detail-logo" id="detailLogo" alt="Logo del equipo">
-<div>
-<h2 id="detailName"></h2>
-<p class="muted" id="detailMeta"></p>
-</div>
-</div>
-
-<div class="cards">
-<div class="info">
-<h3>HISTORIA DE LA FRANQUICIA</h3>
-<p id="detailHistory"></p>
-</div>
-<div class="info">
-<h3>IDENTIDAD Y ADN</h3>
-<p id="detailDNA"></p>
-</div>
-</div>
-
-<div class="section-head">
-<h2>Plantilla y valoraciones</h2>
-<span class="count" id="rosterCount">—</span>
-</div>
-
-<p class="muted" id="rosterStatus">Conectando con Supabase...</p>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>JUGADOR</th>
-<th>SALARIO 2026-27</th>
-<th>EDAD</th>
-<th>POS</th>
-<th>ALTURA</th>
-<th>OVR</th>
-<th>POTENCIAL</th>
-<th>ARQUETIPO</th>
-</tr>
-</thead>
-<tbody id="rosterBody"></tbody>
-</table>
-</div>
-
-<div id="attributePanel" style="display:none;margin-top:20px">
-<h3>ATRIBUTOS DEL JUGADOR</h3>
-<p class="muted" id="attributePlayer"></p>
-<div class="attributes" id="attributeList"></div>
-</div>
-
-<div class="toolbar" style="margin-top:18px">
-<button class="primary" id="startCareer">Comenzar carrera</button>
-<button id="saveTeam">Guardar franquicia</button>
-<button id="hideTeam">Cerrar</button>
-</div>
-
-<p class="muted" id="saveStatus"></p>
+<section id="teamSelection">
+ <h2>Selecciona tu franquicia</h2>
+ <div class="toolbar">
+  <input id="teamSearch" placeholder="Buscar equipo..." oninput="renderTeams()">
+  <button onclick="teamFilter='All';renderTeams()">Todos</button>
+  <button onclick="teamFilter='East';renderTeams()">Este</button>
+  <button onclick="teamFilter='West';renderTeams()">Oeste</button>
+ </div>
+ <div class="grid" id="teams"></div>
 </section>
 
-<section class="career-panel" id="careerPanel">
-<div class="eyebrow">MODO CARRERA · TEMPORADA 2026-27</div>
-<div class="detail-top" style="margin-top:10px">
-<img class="detail-logo" id="careerLogo" alt="Logo de la franquicia">
-<div><h2 id="careerName"></h2><p class="muted" id="careerConference"></p></div>
-</div>
-<div class="career-goal"><strong>OBJETIVO DE LA DIRECTIVA</strong><div id="careerGoal" style="margin-top:6px"></div></div>
-<div class="career-grid">
-<div class="career-stat"><small>EXIGENCIA</small><strong id="careerPressure">—</strong></div>
-<div class="career-stat"><small>META DE TEMPORADA</small><strong id="careerTarget">—</strong></div>
-<div class="career-stat"><small>CONFIANZA INICIAL</small><strong>75 / 100</strong></div>
-<div class="career-stat"><small>TEMPORADA</small><strong>2026-27</strong></div>
-</div>
-<div class="career-actions">
-<button class="primary" id="careerViewRoster">Ver plantilla</button>
-<button id="careerBack">Elegir otro equipo</button>
-</div>
-<p class="muted" style="margin-top:15px">La franquicia quedó seleccionada y guardada en este dispositivo. El calendario, la simulación de partidos, la clasificación y los playoffs se incorporarán en la siguiente etapa.</p>
-</section>
+<section id="game" style="display:none">
+ <div class="panel">
+  <div class="eyebrow">TU FRANQUICIA</div><h2 id="clubName"></h2>
+  <div class="muted" id="clubMeta"></div>
+  <div class="toolbar">
+   <span class="badge" id="record">0-0</span>
+   <span class="badge" id="standing">Posición: —</span>
+   <span class="badge" id="seasonProgress">0 de 82</span>
+  </div>
+ </div>
+ <nav class="tabs">
+  <button class="active" onclick="showTab('dashboard',this)">Inicio</button>
+  <button onclick="showTab('schedule',this)">Calendario</button>
+  <button onclick="showTab('standings',this)">Clasificación</button>
+  <button onclick="showTab('roster',this)">Plantilla</button>
+  <button onclick="showTab('trades',this)">Traspasos</button>
+  <button onclick="showTab('chemistry',this)">Química y afición</button>
+  <button onclick="showTab('objectives',this)">Objetivos</button>
+  <button onclick="showTab('playoffs',this)">Playoffs</button>
+ </nav>
 
+ <section class="view active" id="dashboard">
+  <h2>Centro de operaciones</h2>
+  <div class="grid">
+   <div class="card"><div class="stat-label">VICTORIAS</div><div class="stat good" id="wins">0</div></div>
+   <div class="card"><div class="stat-label">DERROTAS</div><div class="stat bad" id="losses">0</div></div>
+   <div class="card"><div class="stat-label">PORCENTAJE</div><div class="stat" id="winPct">.000</div></div>
+   <div class="card"><div class="stat-label">CONFIANZA DIRECTIVA</div><div class="stat" id="confidence">75</div></div>
+  </div>
+  <div class="panel">
+   <div class="eyebrow">PRÓXIMO PARTIDO</div><h2 id="nextOpponent">Temporada por comenzar</h2>
+   <p class="muted" id="nextInfo"></p>
+   <div class="toolbar">
+    <button class="primary" id="playNext" onclick="playGame()">Simular partido</button>
+    <button onclick="playFive()">Simular 5 partidos</button>
+    <button onclick="playAll()">Simular temporada</button>
+   </div>
+   <div id="lastResult" class="notice">Todavía no se han disputado partidos.</div>
+  </div>
+  <div class="grid">
+   <div class="card"><div class="stat-label">QUÍMICA</div><div class="stat" id="dashChem">75</div><div class="progress"><span id="chemBar"></span></div></div>
+   <div class="card"><div class="stat-label">AFICIÓN</div><div class="stat" id="dashFans">75</div><div class="progress"><span id="fansBar"></span></div></div>
+   <div class="card"><div class="stat-label">DIRECTIVA</div><div class="stat" id="dashBoard">75</div><div class="progress"><span id="boardBar"></span></div></div>
+  </div>
+  <div class="panel"><h3>Noticias de la franquicia</h3><div id="news"></div></div>
+ </section>
+
+ <section class="view" id="schedule">
+  <h2>Calendario de temporada</h2>
+  <p class="muted">82 jornadas de temporada regular simulada.</p>
+  <div class="toolbar">
+   <button onclick="scheduleFilter='all';renderSchedule()">Todos</button>
+   <button onclick="scheduleFilter='pending';renderSchedule()">Pendientes</button>
+   <button onclick="scheduleFilter='played';renderSchedule()">Jugados</button>
+  </div>
+  <div class="table-wrap"><table><thead><tr><th>JORNADA</th><th>PARTIDO</th><th>RESULTADO</th><th>ESTADO</th></tr></thead><tbody id="scheduleBody"></tbody></table></div>
+ </section>
+
+ <section class="view" id="standings">
+  <h2>Clasificación NBA</h2>
+  <div class="panel"><h3>Conferencia Este</h3><div class="table-wrap"><table><thead><tr><th>#</th><th>EQUIPO</th><th>V</th><th>D</th><th>%</th></tr></thead><tbody id="eastTable"></tbody></table></div></div>
+  <div class="panel"><h3>Conferencia Oeste</h3><div class="table-wrap"><table><thead><tr><th>#</th><th>EQUIPO</th><th>V</th><th>D</th><th>%</th></tr></thead><tbody id="westTable"></tbody></table></div></div>
+  <p class="muted">Los registros de los demás equipos son estimaciones simuladas de esta partida.</p>
+ </section>
+
+ <section class="view" id="roster">
+  <h2>Plantilla</h2><p class="muted" id="rosterStatus">Conectando con Supabase...</p>
+  <div class="table-wrap"><table><thead><tr><th>JUGADOR</th><th>POS</th><th>EDAD</th><th>OVR</th><th>SALARIO 26-27</th></tr></thead><tbody id="rosterBody"></tbody></table></div>
+  <div class="notice">La plantilla se carga desde Supabase. Los traspasos de esta versión se guardan en la partida local y no modifican la base de datos.</div>
+ </section>
+
+ <section class="view" id="trades">
+  <h2>Centro de traspasos</h2>
+  <div class="panel">
+   <h3>Proponer traspaso</h3>
+   <label class="muted">Jugador que entregas</label><br><select id="tradeOutgoing"></select><br><br>
+   <label class="muted">Equipo rival</label><br><select id="tradeTeam" onchange="loadTradeTargets()"></select><br><br>
+   <label class="muted">Jugador que recibes</label><br><select id="tradeIncoming"></select><br><br>
+   <button class="primary" onclick="proposeTrade()">Enviar propuesta</button>
+   <div id="tradeMessage" class="notice" style="margin-top:12px">Selecciona jugadores para negociar.</div>
+  </div>
+  <h3>Historial de movimientos</h3><div id="tradeHistory" class="box">Todavía no hay traspasos.</div>
+ </section>
+
+ <section class="view" id="chemistry">
+  <h2>Química, vestuario y afición</h2>
+  <div class="grid">
+   <div class="card"><div class="stat-label">QUÍMICA</div><div class="stat" id="chemistryValue">75</div><div class="progress"><span id="chemistryProgress"></span></div></div>
+   <div class="card"><div class="stat-label">AFICIÓN</div><div class="stat" id="fansValue">75</div><div class="progress"><span id="fansProgress"></span></div></div>
+   <div class="card"><div class="stat-label">DIRECTIVA</div><div class="stat" id="boardValue">75</div><div class="progress"><span id="boardProgress"></span></div></div>
+  </div>
+  <div class="panel">
+   <h3>Vestuario</h3><p id="chemistryText"></p>
+   <h3>Afición</h3><p id="fansText"></p>
+   <h3>Directiva</h3><p id="boardText"></p>
+  </div>
+ </section>
+
+ <section class="view" id="objectives">
+  <h2>Objetivos de la directiva</h2>
+  <div class="panel">
+   <div class="eyebrow">EXPECTATIVAS DE TEMPORADA</div>
+   <h2 id="objectiveTitle"></h2><p id="objectiveDescription"></p>
+   <div class="grid">
+    <div class="card"><div class="stat-label">EXIGENCIA</div><strong id="objectivePressure"></strong></div>
+    <div class="card"><div class="stat-label">META</div><strong id="objectiveTarget"></strong></div>
+    <div class="card"><div class="stat-label">PROGRESO</div><strong id="objectiveProgress"></strong></div>
+   </div>
+  </div>
+  <div class="panel"><h3>Evaluación de la directiva</h3><p id="objectiveEvaluation"></p></div>
+ </section>
+
+ <section class="view" id="playoffs">
+  <h2>Postemporada</h2>
+  <div class="panel">
+   <h3>Camino al campeonato</h3><p id="playoffStatus">Completa la temporada regular para comenzar.</p>
+   <button class="primary" id="startPlayoffs" onclick="beginPlayoffs()" disabled>Comenzar playoffs</button>
+  </div>
+  <div id="playoffBracket"></div>
+ </section>
+
+ <div class="toolbar">
+  <button onclick="saveGame()">Guardar partida</button>
+  <button onclick="backToTeams()">Cambiar franquicia</button>
+  <button class="danger" onclick="resetGame()">Reiniciar temporada</button>
+ </div>
+ <p class="muted" id="saveMessage"></p>
+</section>
 </main>
-
 <footer>NBA GM SIMULATOR · TEMPORADA 2026-27</footer>
 
 <script>
-const SUPABASE_URL = "https://zwtkqgnmjrjfgcmuebyg.supabase.co";
-const SUPABASE_KEY = "sb_publishable_wRbPkHkBDN8i-MdUAo-sTA_MjUV4Sb2";
+const SUPABASE_URL="https://zwtkqgnmjrjfgcmuebyg.supabase.co";
+const SUPABASE_KEY="sb_publishable_wRbPkHkBDN8i-MdUAo-sTA_MjUV4Sb2";
 
-const historicalTitles = {
-ATL:1,BOS:18,BKN:0,CHA:0,CHI:6,CLE:1,DAL:1,DEN:1,
-DET:3,GSW:7,HOU:2,IND:0,LAC:0,LAL:17,MEM:0,MIA:3,
-MIL:2,MIN:0,NOP:0,NYK:2,OKC:1,ORL:0,PHI:3,PHX:0,
-POR:1,SAC:1,SAS:5,TOR:1,UTA:0,WAS:1
+const teamData=[
+["Atlanta Hawks","ATL","East"],["Boston Celtics","BOS","East"],["Brooklyn Nets","BKN","East"],["Charlotte Hornets","CHA","East"],["Chicago Bulls","CHI","East"],["Cleveland Cavaliers","CLE","East"],["Detroit Pistons","DET","East"],["Indiana Pacers","IND","East"],["Miami Heat","MIA","East"],["Milwaukee Bucks","MIL","East"],["New York Knicks","NYK","East"],["Orlando Magic","ORL","East"],["Philadelphia 76ers","PHI","East"],["Toronto Raptors","TOR","East"],["Washington Wizards","WAS","East"],
+["Dallas Mavericks","DAL","West"],["Denver Nuggets","DEN","West"],["Golden State Warriors","GSW","West"],["Houston Rockets","HOU","West"],["LA Clippers","LAC","West"],["Los Angeles Lakers","LAL","West"],["Memphis Grizzlies","MEM","West"],["Minnesota Timberwolves","MIN","West"],["New Orleans Pelicans","NOP","West"],["Oklahoma City Thunder","OKC","West"],["Phoenix Suns","PHX","West"],["Portland Trail Blazers","POR","West"],["Sacramento Kings","SAC","West"],["San Antonio Spurs","SAS","West"],["Utah Jazz","UTA","West"]
+];
+
+const goals={
+"Atlanta Hawks":["Media","Play-in","Competir por un puesto en el play-in."],
+"Boston Celtics":["Élite","Finales NBA","Luchar por el campeonato."],
+"Brooklyn Nets":["Reconstrucción","Desarrollo","Desarrollar jóvenes y acumular activos."],
+"Charlotte Hornets":["Reconstrucción","Desarrollo","Construir una base joven competitiva."],
+"Chicago Bulls":["Reconstrucción","Desarrollo","Desarrollar el núcleo joven."],
+"Cleveland Cavaliers":["Muy alta","Finales de Conferencia","Competir con los mejores del Este."],
+"Dallas Mavericks":["Alta","Playoffs","Clasificar a playoffs."],
+"Denver Nuggets":["Alta","Semifinales","Avanzar en la postemporada."],
+"Detroit Pistons":["Alta","Semifinales","Confirmar el crecimiento del equipo."],
+"Golden State Warriors":["Alta","Playoffs","Regresar a la postemporada."],
+"Houston Rockets":["Alta","Playoffs","Convertir el talento joven en resultados."],
+"Indiana Pacers":["Alta","Playoffs","Clasificar a la postemporada."],
+"LA Clippers":["Media-alta","Playoffs","Competir por un lugar en playoffs."],
+"Los Angeles Lakers":["Muy alta","Finales de Conferencia","Competir por el campeonato."],
+"Memphis Grizzlies":["Alta","Playoffs","Volver a playoffs."],
+"Miami Heat":["Muy alta","Finales de Conferencia","Mantener una campaña fuerte."],
+"Milwaukee Bucks":["Alta","Playoffs","Competir en la postemporada."],
+"Minnesota Timberwolves":["Muy alta","Finales de Conferencia","Competir con los mejores."],
+"New Orleans Pelicans":["Media","Play-in","Acercarse a la postemporada."],
+"New York Knicks":["Élite","Finales NBA","Luchar por el título."],
+"Oklahoma City Thunder":["Élite","Campeonato","Competir por el campeonato."],
+"Orlando Magic":["Alta","Playoffs","Dar un paso adelante."],
+"Philadelphia 76ers":["Élite","Campeonato","Luchar por el título."],
+"Phoenix Suns":["Media-alta","Playoffs","Competir por la postemporada."],
+"Portland Trail Blazers":["Media","Play-in","Acercarse a playoffs."],
+"Sacramento Kings":["Media","Play-in","Mantenerse en la pelea."],
+"San Antonio Spurs":["Alta","Semifinales","Dar un salto competitivo."],
+"Toronto Raptors":["Alta","Playoffs","Volver a competir."],
+"Utah Jazz":["Reconstrucción","Desarrollo","Priorizar el crecimiento joven."],
+"Washington Wizards":["Media","Play-in","Construir una identidad competitiva."]
 };
 
-const historicalStars = {
-ATL:3,BOS:5,BKN:2,CHA:2,CHI:5,CLE:3,DAL:3,DEN:3,
-DET:4,GSW:5,HOU:4,IND:3,LAC:2,LAL:5,MEM:2,MIA:4,
-MIL:4,MIN:2,NOP:2,NYK:4,OKC:3,ORL:2,PHI:4,PHX:3,
-POR:3,SAC:3,SAS:5,TOR:3,UTA:3,WAS:3
-};
+let state=null,teamFilter="All",scheduleFilter="all",rosters={};
 
-const teams = [
-["Atlanta Hawks","ATL","East","Southeast","atl","Atlanta ha construido su historia entre distintas ciudades y generaciones de jugadores. Su título llegó en 1958 como St. Louis Hawks.","Talento ofensivo, ritmo, espectáculo y orgullo de Atlanta."],
-["Boston Celtics","BOS","East","Atlantic","bos","Una de las franquicias más laureadas de la NBA, marcada por las dinastías de Bill Russell y Larry Bird y por sus generaciones modernas.","Tradición ganadora, defensa, juego colectivo y máxima exigencia."],
-["Brooklyn Nets","BKN","East","Atlantic","bkn","La franquicia nació en la ABA, destacó con Julius Erving y se estableció en Brooklyn en 2012 tras su etapa en New Jersey.","Identidad urbana, ambición y espectáculo en el mercado de Nueva York."],
-["Charlotte Hornets","CHA","East","Southeast","cha","La identidad Hornets nació en 1988 y regresó a Charlotte en 2014, conectando con una afición histórica.","Juventud, velocidad, energía y conexión con Carolina del Norte."],
-["Chicago Bulls","CHI","East","Central","chi","La dinastía de Michael Jordan y Scottie Pippen convirtió a Chicago en una de las marcas más reconocibles del deporte.","Mentalidad ganadora, competitividad, defensa y grandes estrellas."],
-["Cleveland Cavaliers","CLE","East","Central","cle","Fundados en 1970, alcanzaron su primer campeonato en 2016 con una remontada histórica en las Finales.","Resiliencia, intensidad, orgullo de Ohio y conexión con su comunidad."],
-["Dallas Mavericks","DAL","West","Southwest","dal","Campeones en 2011 con Dirk Nowitzki, los Mavericks han tenido varias generaciones lideradas por grandes talentos.","Creatividad ofensiva, talento individual y tiro exterior."],
-["Denver Nuggets","DEN","West","Northwest","den","Tras su etapa en la ABA, Denver llegó a la NBA en 1976 y conquistó su primer título en 2023.","Juego colectivo, inteligencia, creatividad y movimiento de balón."],
-["Detroit Pistons","DET","East","Central","det","Los Bad Boys y el equipo campeón de 2004 construyeron una identidad reconocida por su dureza competitiva.","Defensa, sacrificio, carácter y juego físico."],
-["Golden State Warriors","GSW","West","Pacific","gs","Una franquicia histórica que vivió una dinastía moderna liderada por Stephen Curry y un juego revolucionario desde el triple.","Movimiento de balón, tiro exterior, creatividad y ritmo."],
-["Houston Rockets","HOU","West","Southwest","hou","Ganaron campeonatos consecutivos en 1994 y 1995 con Hakeem Olajuwon y han contado con grandes figuras.","Potencia ofensiva, innovación y ambición de campeonato."],
-["Indiana Pacers","IND","East","Central","ind","Una franquicia importante de la ABA antes de incorporarse a la NBA en 1976, con una larga tradición competitiva.","Baloncesto colectivo, ritmo y desarrollo de jugadores."],
-["LA Clippers","LAC","West","Pacific","lac","Nacieron como Buffalo Braves, pasaron por San Diego y llegaron a Los Ángeles en 1984.","Ambición, talento y búsqueda de una identidad ganadora."],
-["Los Angeles Lakers","LAL","West","Pacific","lal","Una de las franquicias más emblemáticas, con leyendas como George Mikan, Magic Johnson, Kobe Bryant y otras generaciones.","Estrellas, espectáculo, presión por ganar y tradición de campeonatos."],
-["Memphis Grizzlies","MEM","West","Southwest","mem","Nacieron en Vancouver en 1995 y se trasladaron a Memphis en 2001, destacando por equipos físicos.","Dureza, defensa, intensidad y orgullo de ciudad."],
-["Miami Heat","MIA","East","Southeast","mia","Desde 1988 construyeron una cultura ganadora con títulos en distintas generaciones, lideradas por Dwyane Wade y otras estrellas.","Disciplina, trabajo, preparación y mentalidad competitiva."],
-["Milwaukee Bucks","MIL","East","Central","mil","Campeones en 1971 con Kareem Abdul-Jabbar y en 2021 con Giannis Antetokounmpo.","Fuerza física, defensa y talento dominante."],
-["Minnesota Timberwolves","MIN","West","Northwest","min","Fundados en 1989, han atravesado etapas de crecimiento y reconstrucción hasta consolidar nuevas generaciones.","Energía, defensa, físico y desarrollo joven."],
-["New Orleans Pelicans","NOP","West","Southwest","no","La franquicia llegó a Nueva Orleans en 2002 y adoptó el nombre Pelicans en 2013.","Atletismo, talento joven y conexión con la ciudad."],
-["New York Knicks","NYK","East","Atlantic","ny","Una de las franquicias fundadoras de la NBA, ligada al Madison Square Garden y a grandes generaciones históricas.","Carácter, intensidad, identidad neoyorquina y afición exigente."],
-["Oklahoma City Thunder","OKC","West","Northwest","okc","Con raíces en los Seattle SuperSonics, la franquicia se trasladó a Oklahoma City en 2008 y construyó una nueva identidad.","Desarrollo de talento, intensidad, defensa y velocidad."],
-["Orlando Magic","ORL","East","Southeast","orl","Fundados en 1989, llegaron a las Finales en 1995 y 2009 con generaciones de grandes figuras.","Talento joven, desarrollo y atletismo."],
-["Philadelphia 76ers","PHI","East","Atlantic","phi","Comenzaron como Syracuse Nationals y han tenido equipos históricos liderados por Wilt Chamberlain y Julius Erving.","Orgullo de ciudad, dureza y talento individual."],
-["Phoenix Suns","PHX","West","Pacific","phx","Fundados en 1968, han contado con grandes figuras como Charles Barkley y Steve Nash y han alcanzado las Finales.","Ataque dinámico, ritmo y talento ofensivo."],
-["Portland Trail Blazers","POR","West","Northwest","por","Campeones en 1977 con Bill Walton, se caracterizan por una afición muy fiel.","Pasión, identidad local y juego colectivo."],
-["Sacramento Kings","SAC","West","Pacific","sac","Su historia se remonta a los Rochester Royals, campeones en 1951, y se establecieron en Sacramento en 1985.","Pasión, velocidad y conexión con la ciudad."],
-["San Antonio Spurs","SAS","West","Southwest","sa","Construyeron una dinastía con Tim Duncan, Tony Parker, Manu Ginóbili y Gregg Popovich, ganando cinco títulos.","Disciplina, fundamentos, juego colectivo y desarrollo."],
-["Toronto Raptors","TOR","East","Atlantic","tor","Fundados en 1995, se convirtieron en el primer equipo canadiense campeón de la NBA en 2019.","Identidad canadiense, talento internacional y afición comprometida."],
-["Utah Jazz","UTA","West","Northwest","uta","Nacieron en Nueva Orleans y se trasladaron a Utah en 1979, alcanzando las Finales en 1997 y 1998.","Continuidad, disciplina y fundamentos."],
-["Washington Wizards","WAS","East","Southeast","wsh","La franquicia tuvo distintas denominaciones y ganó el campeonato de 1978 como Washington Bullets.","Tradición de baloncesto en la capital y búsqueda de una nueva etapa."]
-].map(([name,abbr,conf,division,logo,history,dna])=>({
- name,abbr,conf,division,logo,history,dna,
- titles:historicalTitles[abbr]||0,
- stars:historicalStars[abbr]||1
-}));
+function makeSchedule(team){
+ const others=teamData.filter(t=>t[0]!==team).map(t=>t[0]);
+ return Array.from({length:82},(_,i)=>({
+  day:i+1,opponent:others[(i*7+Math.floor(i/15)*3)%others.length],
+  played:false,result:null,won:null
+ }));
+}
 
-const franchiseGoals = {
- "Atlanta Hawks":["Media","Pelear por el play-in","Competir por un puesto en el play-in y seguir construyendo el equipo."],
- "Boston Celtics":["Muy alta","Finales de Conferencia","La directiva espera competir por el campeonato y llegar lejos en playoffs."],
- "Brooklyn Nets":["Reconstrucción","Desarrollar jóvenes","Priorizar el desarrollo del talento joven y acumular activos para el futuro."],
- "Charlotte Hornets":["Reconstrucción","Desarrollar jóvenes","Dar prioridad al crecimiento de los jóvenes y construir una base competitiva."],
- "Chicago Bulls":["Reconstrucción","Desarrollar jóvenes","Desarrollar el núcleo joven y mejorar progresivamente la plantilla."],
- "Cleveland Cavaliers":["Muy alta","Finales de Conferencia","La plantilla debe competir con los mejores equipos del Este."],
- "Dallas Mavericks":["Media-alta","Clasificar a playoffs","Convertir el talento de la plantilla en una clasificación a playoffs."],
- "Denver Nuggets":["Alta","Semifinales de Conferencia","La directiva espera competir seriamente en postemporada."],
- "Detroit Pistons":["Alta","Semifinales de Conferencia","Confirmar el crecimiento del equipo y superar la primera ronda."],
- "Golden State Warriors":["Alta","Clasificar a playoffs","Aprovechar la experiencia y el talento para regresar a playoffs."],
- "Houston Rockets":["Alta","Clasificar a playoffs","El talento joven debe traducirse en resultados y una plaza de playoffs."],
- "Indiana Pacers":["Alta","Clasificar a playoffs","Mantenerse competitivos y alcanzar la postemporada."],
- "LA Clippers":["Media-alta","Pelear por playoffs","Competir por un lugar en playoffs y mantener al equipo en la pelea."],
- "Los Angeles Lakers":["Alta","Clasificar a playoffs","La historia y las expectativas de la franquicia exigen competir en postemporada."],
- "Memphis Grizzlies":["Media-alta","Clasificar a playoffs","Volver a playoffs con una temporada consistente."],
- "Miami Heat":["Muy alta","Finales de Conferencia","La cultura competitiva de Miami exige una campaña fuerte en playoffs."],
- "Milwaukee Bucks":["Alta","Clasificar a playoffs","Mantenerse en la pelea por playoffs y aprovechar el talento principal."],
- "Minnesota Timberwolves":["Muy alta","Finales de Conferencia","La plantilla tiene nivel para competir con los mejores."],
- "New Orleans Pelicans":["Media","Pelear por el play-in","Acercarse a playoffs y desarrollar la química del equipo."],
- "New York Knicks":["Élite","Llegar a las Finales","La exigencia del mercado es competir por el campeonato y alcanzar las Finales."],
- "Oklahoma City Thunder":["Élite","Competir por el campeonato","La plantilla está construida para luchar por el título."],
- "Orlando Magic":["Media-alta","Clasificar a playoffs","El núcleo joven debe dar un paso adelante y llegar a playoffs."],
- "Philadelphia 76ers":["Élite","Competir por el campeonato","La directiva exige luchar por el título con una plantilla de aspiraciones máximas."],
- "Phoenix Suns":["Media-alta","Pelear por playoffs","Competir por un puesto en la postemporada."],
- "Portland Trail Blazers":["Media-alta","Pelear por el play-in","Dar un paso adelante y acercarse a la postemporada."],
- "Sacramento Kings":["Media","Pelear por el play-in","Mantenerse cerca de la zona de playoffs y mostrar progreso."],
- "San Antonio Spurs":["Muy alta","Semifinales de Conferencia","El talento joven debe dar un salto competitivo y avanzar en playoffs."],
- "Toronto Raptors":["Alta","Clasificar a playoffs","Consolidar el grupo y volver a competir en postemporada."],
- "Utah Jazz":["Reconstrucción","Desarrollar jóvenes","Priorizar el desarrollo, el progreso individual y los activos futuros."],
- "Washington Wizards":["Media-alta","Pelear por el play-in","Competir y construir una identidad alrededor de las piezas principales."]
-};
-
-let selectedTeam = null;
-let selectedPlayer = null;
-let filter = "All";
-
-const $ = id => document.getElementById(id);
-
-function logoUrl(team){
- if(team.abbr==="UTA")
-  return "https://cdn.nba.com/logos/nba/1610612762/primary/L/logo.svg";
- return "https://a.espncdn.com/i/teamlogos/nba/500/"+team.logo+".png";
+function newState(team){
+ return {
+  team,day:0,wins:0,losses:0,chemistry:75,fans:75,confidence:75,
+  roster:[],schedule:makeSchedule(team),
+  news:["La directiva ha confirmado el inicio de la temporada 2026-27."],
+  trades:[],playoffs:null
+ };
 }
 
 function renderTeams(){
- const q=$("search").value.trim().toLowerCase();
- const filtered=teams.filter(t=>
-  (filter==="All"||t.conf===filter)&&
-  (t.name.toLowerCase().includes(q)||t.abbr.toLowerCase().includes(q))
- );
- $("teams").innerHTML="";
- $("teamCount").textContent=filtered.length+" equipos";
- filtered.forEach(team=>{
-  const card=document.createElement("article");
-  card.className="team";
-  const img=document.createElement("img");
-  img.className="team-logo";
-  img.src=logoUrl(team);
-  img.alt=team.name;
-  img.onerror=()=>{img.style.display="none";};
-  const name=document.createElement("div");
-  name.className="team-name";
-  name.textContent=team.name;
-  const conf=document.createElement("div");
-  conf.className="team-conf";
-  conf.textContent=(team.conf==="East"?"Conferencia Este":"Conferencia Oeste")+" · "+team.division;
-  const titles=document.createElement("div");
-  titles.className="team-titles";
-  titles.textContent=team.titles+" "+(team.titles===1?"campeonato":"campeonatos");
-  const stars=document.createElement("div");
-  stars.className="team-stars";
-  stars.textContent="★".repeat(team.stars)+"☆".repeat(5-team.stars);
-  stars.setAttribute("aria-label",team.stars+" de 5 estrellas de valor histórico");
-  const starsLabel=document.createElement("div");
-  starsLabel.className="team-stars-label";
-  starsLabel.textContent="VALOR HISTÓRICO";
-  card.append(img,name,conf,titles,stars,starsLabel);
-  card.onclick=()=>selectTeam(team);
-  $("teams").appendChild(card);
- });
+ const q=document.getElementById("teamSearch").value.toLowerCase();
+ document.getElementById("teams").innerHTML=teamData
+ .filter(t=>(teamFilter==="All"||t[2]===teamFilter)&&t[0].toLowerCase().includes(q))
+ .map(t=>`<button class="team-card" onclick="startGame('${t[0]}')">
+ <div class="muted">${t[2]==="East"?"CONFERENCIA ESTE":"CONFERENCIA OESTE"}</div>
+ <strong>${t[0]}</strong><span class="badge">${t[1]}</span></button>`).join("");
 }
 
-async function selectTeam(team){
- selectedTeam=team;
- selectedPlayer=null;
- $("teamPanel").classList.add("show");
- $("detailLogo").src=logoUrl(team);
- $("detailLogo").style.display="";
- $("detailName").textContent=team.name;
- $("detailMeta").textContent=
-  (team.conf==="East"?"Conferencia Este":"Conferencia Oeste")+
-  " · División "+team.division+
-  " · "+team.titles+" "+(team.titles===1?"campeonato":"campeonatos")+
-  " · "+team.stars+"/5 estrellas históricas";
- $("detailHistory").textContent=team.history;
- $("detailDNA").textContent=team.dna;
- $("attributePanel").style.display="none";
- $("rosterBody").innerHTML="";
- $("rosterStatus").textContent="Buscando jugadores de "+team.name+"...";
- $("rosterCount").textContent="Cargando";
- $("saveStatus").textContent="";
- $("teamPanel").scrollIntoView({behavior:"smooth",block:"start"});
- await loadRoster(team);
+function startGame(name){
+ state=newState(name);
+ document.getElementById("teamSelection").style.display="none";
+ document.getElementById("game").style.display="block";
+ const g=goals[name]||["Media","Playoffs","Competir."];
+ document.getElementById("clubName").textContent=name;
+ document.getElementById("clubMeta").textContent=(teamData.find(t=>t[0]===name)[2]==="East"?"Conferencia Este":"Conferencia Oeste")+" · 2026-27";
+ document.getElementById("objectiveTitle").textContent=name;
+ document.getElementById("objectivePressure").textContent=g[0];
+ document.getElementById("objectiveTarget").textContent=g[1];
+ document.getElementById("objectiveDescription").textContent=g[2];
+ loadRoster();
+ fillTradeTeams();
+ updateUI();
+ showTab("dashboard",document.querySelector(".tabs button"));
 }
 
-async function loadRoster(team){
- const body=$("rosterBody");
+function showTab(id,button){
+ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+ document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ if(button)button.classList.add("active");
+ if(id==="standings")renderStandings();
+ if(id==="schedule")renderSchedule();
+ if(id==="trades")renderTrades();
+ if(id==="objectives")renderObjectives();
+ if(id==="playoffs")renderPlayoffs();
+}
+
+async function loadRoster(){
+ const status=document.getElementById("rosterStatus");
+ status.textContent="Cargando plantilla desde Supabase...";
  try{
-  const endpoint=SUPABASE_URL+
-   "/rest/v1/nba2k27_player_ratings?select=player_name,team_name,position,secondary_position,height,overall,potential_grade,attributes,archetype,player_image_url,age"+
-   "&team_name=eq."+encodeURIComponent(team.name)+
-   "&season=eq.2026-27&order=overall.desc";
-  const response=await fetch(endpoint,{
-   headers:{
-    apikey:SUPABASE_KEY,
-    Authorization:"Bearer "+SUPABASE_KEY
-   }
-  });
-  if(!response.ok)throw new Error("HTTP "+response.status);
-  const players=await response.json();
-  if(!players.length){
-   $("rosterStatus").textContent="No hay jugadores cargados para "+team.name+" en la tabla nba2k27_player_ratings. La conexión funciona, pero faltan los datos.";
-   $("rosterCount").textContent="0 jugadores";
-   return;
-  }
-  $("rosterStatus").textContent="Selecciona un jugador para consultar sus atributos completos.";
-  $("rosterCount").textContent=players.length+" jugadores";
-  players.forEach(player=>{
-   const tr=document.createElement("tr");
-   const name=document.createElement("td");
-   if(player.player_image_url){
-    const img=document.createElement("img");
-    img.src=player.player_image_url;
-    img.alt=player.player_name;
-    img.loading="lazy";
-    img.onerror=()=>img.style.display="none";
-    name.appendChild(img);
-   }
-   name.appendChild(document.createTextNode(player.player_name||"Jugador"));
-   const salary=player.attributes?.salary_usd_2026_27;
-   const salaryNote=player.attributes?.salary_note;
-   const salaryText=salary!=null
-    ? "$"+Number(salary).toLocaleString("en-US")
-    : salaryNote?.includes("Two-Way") ? "Two-Way" : "—";
-   const values=[
-    salaryText,
-    player.age??"—",
-    player.position||"—",
-    player.height||"—",
-    player.overall??"—",
-    player.potential_grade||"—",
-    player.archetype||"—"
-   ];
-   tr.appendChild(name);
-   values.forEach((value,i)=>{
-    const td=document.createElement("td");
-    td.textContent=value;
-    if(i===4)td.className="ovr";
-    tr.appendChild(td);
-   });
-   tr.style.cursor="pointer";
-   tr.onclick=()=>showAttributes(player);
-   body.appendChild(tr);
-  });
- }catch(error){
-  console.error(error);
-  $("rosterStatus").textContent="Error al conectar con Supabase ("+error.message+"). Revisa URL, clave y permisos de lectura.";
-  $("rosterCount").textContent="Error";
+  const url=SUPABASE_URL+"/rest/v1/nba2k27_player_ratings?select=player_name,team_name,position,overall,age,attributes,player_image_url&team_name=eq."+encodeURIComponent(state.team)+"&season=eq.2026-27&order=overall.desc";
+  const res=await fetch(url,{headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}});
+  if(!res.ok)throw Error("HTTP "+res.status);
+  const players=await res.json();
+  state.roster=players.map(p=>({...p,salary:Number(p.attributes?.salary_usd_2026_27)||0}));
+  rosters[state.team]=state.roster;
+  renderRoster();
+  status.textContent=players.length+" jugadores cargados.";
+ }catch(e){
+  status.textContent="No se pudo cargar la plantilla: "+e.message;
+  state.roster=[];
+  renderRoster();
  }
 }
 
-function startCareer(){
- if(!selectedTeam){alert("Primero selecciona una franquicia.");return;}
- const goal=franchiseGoals[selectedTeam.name]||["Media","Competir","Construir una temporada competitiva."];
- $("careerLogo").src=logoUrl(selectedTeam);
- $("careerName").textContent=selectedTeam.name;
- $("careerConference").textContent=(selectedTeam.conf==="East"?"Conferencia Este":"Conferencia Oeste")+" · División "+selectedTeam.division;
- $("careerPressure").textContent=goal[0];
- $("careerTarget").textContent=goal[1];
- $("careerGoal").textContent=goal[2];
- $("careerPanel").classList.add("show");
- try{
-  localStorage.setItem("nbaGM_career",JSON.stringify({
-   teamName:selectedTeam.name,
-   teamAbbr:selectedTeam.abbr,
-   conference:selectedTeam.conf,
-   division:selectedTeam.division,
-   season:"2026-27",
-   started:true,
-   goal:goal[1],
-   pressure:goal[0],
-   confidence:75
-  }));
- }catch(e){}
- $("careerPanel").scrollIntoView({behavior:"smooth",block:"start"});
+function escapeHTML(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 
-function showAttributes(player){
- selectedPlayer=player;
- $("attributePanel").style.display="block";
- $("attributePlayer").textContent=
-  player.player_name+" · OVR "+player.overall+" · "+
-  (player.archetype||"Arquetipo no indicado");
- const list=$("attributeList");
- list.innerHTML="";
- const attrs=player.attributes||{};
- if(typeof attrs!=="object"||Array.isArray(attrs)||!Object.keys(attrs).length){
-  list.textContent="Este registro todavía no contiene atributos individuales.";
+function renderRoster(){
+ document.getElementById("rosterBody").innerHTML=state.roster.map(p=>
+ `<tr><td>${escapeHTML(p.player_name)}</td><td>${escapeHTML(p.position||"—")}</td><td>${p.age??"—"}</td><td><strong>${p.overall??"—"}</strong></td><td>${p.salary?"$"+p.salary.toLocaleString("en-US"):"—"}</td></tr>`
+ ).join("");
+ document.getElementById("tradeOutgoing").innerHTML=state.roster.map((p,i)=>
+ `<option value="${i}">${escapeHTML(p.player_name)} · ${p.overall||"—"} OVR</option>`).join("");
+}
+
+function random(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function clamp(n){return Math.max(0,Math.min(100,n))}
+
+function myStrength(){
+ if(!state.roster.length)return 80;
+ const top=state.roster.map(p=>Number(p.overall)||75).sort((a,b)=>b-a).slice(0,8);
+ return top.reduce((a,b)=>a+b,0)/top.length;
+}
+
+function teamStrength(name){
+ const seed=name.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+ return 75+(seed%17);
+}
+
+function playGame(){
+ if(state.day>=82)return;
+ const game=state.schedule[state.day];
+ const own=myStrength()+(state.chemistry-50)*.08+random(-5,5);
+ const rival=teamStrength(game.opponent)+random(-4,4);
+ const myScore=random(94,119)+Math.round((own-80)*.55);
+ const oppScore=random(94,119)+Math.round((rival-80)*.55);
+ const won=myScore>oppScore;
+
+ game.played=true;game.result=myScore+"-"+oppScore;game.won=won;
+ state.day++;
+ if(won){
+  state.wins++;state.chemistry=clamp(state.chemistry+2);
+  state.fans=clamp(state.fans+3);state.confidence=clamp(state.confidence+2);
+  addNews("Victoria contra "+game.opponent+". La afición celebra el resultado.");
+ }else{
+  state.losses++;state.chemistry=clamp(state.chemistry-2);
+  state.fans=clamp(state.fans-2);state.confidence=clamp(state.confidence-2);
+  addNews("Derrota contra "+game.opponent+". La directiva espera una reacción.");
+ }
+ document.getElementById("lastResult").innerHTML=
+ `<strong>${won?"VICTORIA":"DERROTA"}</strong><div class="score">${myScore} - ${oppScore}</div>${escapeHTML(state.team)} vs. ${escapeHTML(game.opponent)}<br>Jornada ${state.day}`;
+ updateUI();renderSchedule();renderStandings();saveGame();
+}
+
+function addNews(msg){
+ state.news.unshift("J"+state.day+": "+msg);
+ state.news=state.news.slice(0,8);
+}
+
+function playFive(){for(let i=0;i<5&&state.day<82;i++)playGame()}
+function playAll(){
+ if(!confirm("¿Simular todos los partidos restantes?"))return;
+ while(state.day<82)playGame();
+}
+
+function updateUI(){
+ const total=state.wins+state.losses;
+ document.getElementById("record").textContent=state.wins+"-"+state.losses;
+ document.getElementById("seasonProgress").textContent=state.day+" de 82";
+ document.getElementById("wins").textContent=state.wins;
+ document.getElementById("losses").textContent=state.losses;
+ document.getElementById("winPct").textContent=total?(state.wins/total).toFixed(3):".000";
+ document.getElementById("confidence").textContent=state.confidence;
+ document.getElementById("dashChem").textContent=state.chemistry;
+ document.getElementById("dashFans").textContent=state.fans;
+ document.getElementById("dashBoard").textContent=state.confidence;
+ document.getElementById("chemBar").style.width=state.chemistry+"%";
+ document.getElementById("fansBar").style.width=state.fans+"%";
+ document.getElementById("boardBar").style.width=state.confidence+"%";
+ document.getElementById("chemistryValue").textContent=state.chemistry;
+ document.getElementById("fansValue").textContent=state.fans;
+ document.getElementById("boardValue").textContent=state.confidence;
+ document.getElementById("chemistryProgress").style.width=state.chemistry+"%";
+ document.getElementById("fansProgress").style.width=state.fans+"%";
+ document.getElementById("boardProgress").style.width=state.confidence+"%";
+ document.getElementById("chemistryText").textContent=state.chemistry>=75?"El vestuario está unido.":state.chemistry>=45?"Hay algunas tensiones en el vestuario.":"El vestuario atraviesa un momento complicado.";
+ document.getElementById("fansText").textContent=state.fans>=75?"La afición está ilusionada.":state.fans>=45?"La afición quiere mejores resultados.":"La paciencia de los aficionados se está agotando.";
+ document.getElementById("boardText").textContent=state.confidence>=75?"La directiva respalda tu gestión.":state.confidence>=45?"La directiva está evaluando los resultados.":"La directiva está preocupada por el proyecto.";
+ document.getElementById("news").innerHTML=state.news.map(n=>"<p>"+escapeHTML(n)+"</p>").join("");
+ document.getElementById("playNext").disabled=state.day>=82;
+ document.getElementById("startPlayoffs").disabled=state.day<82;
+ document.getElementById("standing").textContent="Posición: "+rankPosition();
+ const next=state.schedule[state.day];
+ document.getElementById("nextOpponent").textContent=next?state.team+" vs. "+next.opponent:"Temporada regular finalizada";
+ document.getElementById("nextInfo").textContent=next?"Jornada "+next.day+" · Próximo encuentro":"Has completado los 82 partidos.";
+ document.getElementById("objectiveProgress").textContent=state.wins+" victorias en "+state.day+" partidos";
+}
+
+function renderSchedule(){
+ const games=state.schedule.filter(g=>scheduleFilter==="all"||(scheduleFilter==="played"&&g.played)||(scheduleFilter==="pending"&&!g.played));
+ document.getElementById("scheduleBody").innerHTML=games.map(g=>
+ `<tr><td>${g.day}</td><td>${escapeHTML(state.team)} vs. ${escapeHTML(g.opponent)}</td><td>${g.result||"—"}</td><td>${g.played?'<span class="good">Finalizado</span>':'Pendiente'}</td></tr>`).join("");
+}
+
+function standingsData(conf){
+ return teamData.filter(t=>t[2]===conf).map(t=>{
+  if(t[0]===state.team)return {name:t[0],wins:state.wins,losses:state.losses};
+  const strength=teamStrength(t[0]);
+  const wins=Math.round(state.day*(.38+(strength-75)*.018));
+  return {name:t[0],wins:Math.min(state.day,wins),losses:Math.max(0,state.day-wins)};
+ }).sort((a,b)=>b.wins-a.wins);
+}
+
+function rankPosition(){
+ const conf=teamData.find(t=>t[0]===state.team)[2];
+ return standingsData(conf).findIndex(t=>t.name===state.team)+1;
+}
+
+function renderStandings(){
+ ["East","West"].forEach(conf=>{
+  const id=conf==="East"?"eastTable":"westTable";
+  document.getElementById(id).innerHTML=standingsData(conf).map((t,i)=>{
+   const total=t.wins+t.losses;
+   return `<tr><td>${i+1}</td><td>${escapeHTML(t.name)}</td><td>${t.wins}</td><td>${t.losses}</td><td>${total?(t.wins/total).toFixed(3):".000"}</td></tr>`;
+  }).join("");
+ });
+}
+
+function fillTradeTeams(){
+ document.getElementById("tradeTeam").innerHTML=teamData.filter(t=>t[0]!==state.team).map(t=>
+ `<option value="${escapeHTML(t[0])}">${escapeHTML(t[0])}</option>`).join("");
+}
+
+async function loadTradeTargets(){
+ const name=document.getElementById("tradeTeam").value;
+ const select=document.getElementById("tradeIncoming");
+ select.innerHTML="<option>Cargando...</option>";
+ try{
+  const url=SUPABASE_URL+"/rest/v1/nba2k27_player_ratings?select=player_name,overall,position,attributes,age&team_name=eq."+encodeURIComponent(name)+"&season=eq.2026-27&order=overall.desc";
+  const res=await fetch(url,{headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}});
+  if(!res.ok)throw Error("Error al consultar equipo");
+  const players=await res.json();
+  rosters[name]=players;
+  select.innerHTML=players.map((p,i)=>`<option value="${i}">${escapeHTML(p.player_name)} · ${p.overall} OVR</option>`).join("");
+ }catch(e){select.innerHTML="<option>No se pudo cargar el equipo</option>"}
+}
+
+async function proposeTrade(){
+ const outgoing=state.roster[Number(document.getElementById("tradeOutgoing").value)];
+ const team=document.getElementById("tradeTeam").value;
+ if(!outgoing){document.getElementById("tradeMessage").textContent="No tienes jugadores disponibles.";return}
+ if(!rosters[team])await loadTradeTargets();
+ const incoming=rosters[team]?.[Number(document.getElementById("tradeIncoming").value)];
+ if(!incoming){document.getElementById("tradeMessage").textContent="No se pudo encontrar el jugador rival.";return}
+ const diff=(Number(outgoing.overall)||70)-(Number(incoming.overall)||70);
+ const accepted=diff>=-4||Math.random()>.65;
+ if(!accepted){
+  document.getElementById("tradeMessage").textContent="La franquicia rival rechazó la propuesta. Considera ofrecer más valor.";
   return;
  }
- Object.entries(attrs).forEach(([key,value])=>{
-  const item=document.createElement("div");
-  item.className="attr";
-  const k=document.createElement("span");
-  k.textContent=key.replaceAll("_"," ");
-  const v=document.createElement("strong");
-  v.textContent=value;
-  item.append(k,v);
-  list.appendChild(item);
- });
+ state.roster=state.roster.filter(p=>p!==outgoing);
+ state.roster.push({...incoming,team_name:state.team,salary:Number(incoming.attributes?.salary_usd_2026_27)||0});
+ rosters[team]=rosters[team].filter(p=>p!==incoming);
+ rosters[team].push({...outgoing,team_name:team});
+ state.trades.unshift(`${outgoing.player_name} por ${incoming.player_name} (${team})`);
+ state.chemistry=clamp(state.chemistry-2);
+ state.news.unshift("Traspaso realizado: llega "+incoming.player_name+".");
+ renderRoster();renderTrades();updateUI();saveGame();
+ document.getElementById("tradeMessage").textContent="¡Traspaso aceptado! El movimiento se guardó en tu partida local.";
 }
 
-document.querySelectorAll(".filter").forEach(btn=>{
- btn.onclick=()=>{
-  document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  filter=btn.dataset.filter;
-  renderTeams();
- };
-});
+function renderTrades(){
+ document.getElementById("tradeHistory").innerHTML=state.trades.length?state.trades.map(t=>"<p>"+escapeHTML(t)+"</p>").join(""):"Todavía no hay traspasos.";
+}
 
-$("search").addEventListener("input",renderTeams);
-$("startCareer").onclick=startCareer;
+function renderObjectives(){
+ const g=goals[state.team]||["Media","Playoffs","Competir."];
+ let evaluation="La directiva está evaluando el rendimiento.";
+ if(state.day>=82){
+  evaluation=state.wins>=45?"La directiva considera que has cumplido una buena temporada.":"La directiva esperaba mejores resultados.";
+ }else if(state.confidence>=75)evaluation="La directiva está satisfecha con la gestión.";
+ else if(state.confidence<45)evaluation="La directiva está preocupada por los resultados.";
+ document.getElementById("objectiveEvaluation").textContent=evaluation;
+ document.getElementById("objectiveProgress").textContent=state.wins+" victorias / "+state.day+" partidos";
+}
 
-$("careerViewRoster").onclick=()=>{
- $("careerPanel").classList.remove("show");
- if(selectedTeam) $("teamPanel").scrollIntoView({behavior:"smooth",block:"start"});
-};
-
-$("careerBack").onclick=()=>{
- $("careerPanel").classList.remove("show");
- $("teamPanel").classList.remove("show");
- selectedTeam=null;
- $("teams").scrollIntoView({behavior:"smooth",block:"start"});
-};
-
-$("hideTeam").onclick=()=>{
- $("teamPanel").classList.remove("show");
- selectedTeam=null;
-};
-
-$("saveTeam").onclick=()=>{
- if(!selectedTeam)return;
- try{
-  localStorage.setItem("nbaGM_selectedTeam",JSON.stringify({
-   teamName:selectedTeam.name,
-   teamAbbr:selectedTeam.abbr,
-   conference:selectedTeam.conf,
-   division:selectedTeam.division,
-   selectedAt:new Date().toISOString()
-  }));
-  $("saveStatus").textContent="Franquicia guardada en este dispositivo: "+selectedTeam.name;
- }catch(e){
-  $("saveStatus").textContent="No se pudo guardar en este navegador.";
+function beginPlayoffs(){
+ if(state.day<82)return;
+ const conf=teamData.find(t=>t[0]===state.team)[2];
+ const position=rankPosition();
+ if(position>10){
+  document.getElementById("playoffStatus").textContent="Tu equipo no clasificó a la postemporada.";
+  return;
  }
-};
+ const rounds=["Primera ronda","Semifinales de conferencia","Finales de conferencia","Finales NBA"];
+ state.playoffs={round:0,champion:false,eliminated:false,history:[]};
+ const won=position<=6;
+ state.playoffs.history.push((won?"Victoria":"Derrota")+" en primera ronda de "+conf);
+ state.playoffs.round=won?1:0;
+ state.playoffs.eliminated=!won;
+ state.playoffs.champion=false;
+ document.getElementById("playoffStatus").textContent=won?"¡Has avanzado a semifinales de conferencia!":"El equipo quedó eliminado en primera ronda.";
+ renderPlayoffs();saveGame();
+}
+
+function renderPlayoffs(){
+ if(!state.playoffs){
+  document.getElementById("playoffBracket").innerHTML="";
+  return;
+ }
+ document.getElementById("playoffBracket").innerHTML=state.playoffs.history.map(x=>`<div class="panel">${escapeHTML(x)}</div>`).join("");
+}
+
+function saveGame(){
+ if(!state)return;
+ try{
+  localStorage.setItem("nbaGM2027_"+state.team,JSON.stringify(state));
+  document.getElementById("saveMessage").textContent="Partida guardada en este dispositivo.";
+ }catch(e){document.getElementById("saveMessage").textContent="No se pudo guardar la partida."}
+}
+
+function resetGame(){
+ if(!confirm("¿Seguro que quieres reiniciar esta temporada?"))return;
+ const team=state.team;
+ localStorage.removeItem("nbaGM2027_"+team);
+ startGame(team);
+}
+
+function backToTeams(){
+ saveGame();
+ document.getElementById("game").style.display="none";
+ document.getElementById("teamSelection").style.display="block";
+}
 
 renderTeams();
-
-try{
- const saved=JSON.parse(localStorage.getItem("nbaGM_selectedTeam")||"null");
- if(saved){
-  const team=teams.find(t=>t.abbr===saved.teamAbbr);
-  if(team)selectTeam(team);
- }
-}catch(e){}
 </script>
 </body>
 </html>
