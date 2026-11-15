@@ -27,11 +27,14 @@ button:hover{border-color:var(--blue)}
 button.active,.primary{background:var(--blue);border-color:var(--blue)}
 .search{width:100%;max-width:340px;background:var(--panel);color:white;border:1px solid var(--border);border-radius:9px;padding:11px 13px}
 .teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:13px}
-.team{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:15px 10px;text-align:center;cursor:pointer;min-height:155px}
+.team{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:15px 10px;text-align:center;cursor:pointer;min-height:180px}
 .team:hover{border-color:#5795ff;transform:translateY(-2px)}
 .team-logo{width:64px;height:64px;object-fit:contain;display:block;margin:0 auto 9px}
 .team-name{font-size:13px;font-weight:bold}
 .team-conf{font-size:10px;color:var(--muted);margin-top:6px}
+.team-titles{font-size:11px;color:#d9e4f3;margin-top:6px;font-weight:bold}
+.team-stars{font-size:14px;letter-spacing:2px;color:#f6c453;margin-top:7px}
+.team-stars-label{font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:2px}
 .panel{display:none;background:linear-gradient(125deg,#172a45,#101a2a);border:1px solid #355780;border-radius:16px;padding:20px;margin-top:22px}
 .panel.show{display:block}
 .detail-top{display:flex;align-items:center;gap:15px;margin-bottom:18px}
@@ -166,6 +169,20 @@ Las imágenes se muestran únicamente cuando existe una URL válida en
 const SUPABASE_URL = "https://zwtkqgnmjrjfgcmuebyg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_wRbPkHkBDN8i-MdUAo-sTA_MjUV4Sb2";
 
+const historicalTitles = {
+ATL:1,BOS:18,BKN:0,CHA:0,CHI:6,CLE:1,DAL:1,DEN:1,
+DET:3,GSW:7,HOU:2,IND:0,LAC:0,LAL:17,MEM:0,MIA:3,
+MIL:2,MIN:0,NOP:0,NYK:2,OKC:1,ORL:0,PHI:3,PHX:0,
+POR:1,SAC:1,SAS:5,TOR:1,UTA:0,WAS:1
+};
+
+const historicalStars = {
+ATL:3,BOS:5,BKN:2,CHA:2,CHI:5,CLE:3,DAL:3,DEN:3,
+DET:4,GSW:5,HOU:4,IND:3,LAC:2,LAL:5,MEM:2,MIA:4,
+MIL:4,MIN:2,NOP:2,NYK:4,OKC:3,ORL:2,PHI:4,PHX:3,
+POR:3,SAC:3,SAS:5,TOR:3,UTA:3,WAS:3
+};
+
 const teams = [
 ["Atlanta Hawks","ATL","East","Southeast","atl","Atlanta ha construido su historia entre distintas ciudades y generaciones de jugadores. Su título llegó en 1958 como St. Louis Hawks.","Talento ofensivo, ritmo, espectáculo y orgullo de Atlanta."],
 ["Boston Celtics","BOS","East","Atlantic","bos","Una de las franquicias más laureadas de la NBA, marcada por las dinastías de Bill Russell y Larry Bird y por sus generaciones modernas.","Tradición ganadora, defensa, juego colectivo y máxima exigencia."],
@@ -197,7 +214,11 @@ const teams = [
 ["Toronto Raptors","TOR","East","Atlantic","tor","Fundados en 1995, se convirtieron en el primer equipo canadiense campeón de la NBA en 2019.","Identidad canadiense, talento internacional y afición comprometida."],
 ["Utah Jazz","UTA","West","Northwest","uta","Nacieron en Nueva Orleans y se trasladaron a Utah en 1979, alcanzando las Finales en 1997 y 1998.","Continuidad, disciplina y fundamentos."],
 ["Washington Wizards","WAS","East","Southeast","wsh","La franquicia tuvo distintas denominaciones y ganó el campeonato de 1978 como Washington Bullets.","Tradición de baloncesto en la capital y búsqueda de una nueva etapa."]
-].map(([name,abbr,conf,division,logo,history,dna])=>({name,abbr,conf,division,logo,history,dna}));
+].map(([name,abbr,conf,division,logo,history,dna])=>({
+ name,abbr,conf,division,logo,history,dna,
+ titles:historicalTitles[abbr]||0,
+ stars:historicalStars[abbr]||1
+}));
 
 let selectedTeam = null;
 let selectedPlayer = null;
@@ -206,11 +227,15 @@ let filter = "All";
 const $ = id => document.getElementById(id);
 
 function logoUrl(team){
+ if(team.abbr==="UTA")
+  return "https://cdn.nba.com/logos/nba/1610612762/primary/L/logo.svg";
+
  return "https://a.espncdn.com/i/teamlogos/nba/500/"+team.logo+".png";
 }
 
 function renderTeams(){
  const q=$("search").value.trim().toLowerCase();
+
  const filtered=teams.filter(t=>
   (filter==="All"||t.conf===filter)&&
   (t.name.toLowerCase().includes(q)||t.abbr.toLowerCase().includes(q))
@@ -237,7 +262,20 @@ function renderTeams(){
   conf.className="team-conf";
   conf.textContent=(team.conf==="East"?"Conferencia Este":"Conferencia Oeste")+" · "+team.division;
 
-  card.append(img,name,conf);
+  const titles=document.createElement("div");
+  titles.className="team-titles";
+  titles.textContent=team.titles+" "+(team.titles===1?"campeonato":"campeonatos");
+
+  const stars=document.createElement("div");
+  stars.className="team-stars";
+  stars.textContent="★".repeat(team.stars)+"☆".repeat(5-team.stars);
+  stars.setAttribute("aria-label",team.stars+" de 5 estrellas de valor histórico");
+
+  const starsLabel=document.createElement("div");
+  starsLabel.className="team-stars-label";
+  starsLabel.textContent="VALOR HISTÓRICO";
+
+  card.append(img,name,conf,titles,stars,starsLabel);
   card.onclick=()=>selectTeam(team);
   $("teams").appendChild(card);
  });
@@ -251,7 +289,13 @@ async function selectTeam(team){
  $("detailLogo").src=logoUrl(team);
  $("detailLogo").style.display="";
  $("detailName").textContent=team.name;
- $("detailMeta").textContent=(team.conf==="East"?"Conferencia Este":"Conferencia Oeste")+" · División "+team.division;
+
+ $("detailMeta").textContent=
+  (team.conf==="East"?"Conferencia Este":"Conferencia Oeste")+
+  " · División "+team.division+
+  " · "+team.titles+" "+(team.titles===1?"campeonato":"campeonatos")+
+  " · "+team.stars+"/5 estrellas históricas";
+
  $("detailHistory").textContent=team.history;
  $("detailDNA").textContent=team.dna;
  $("attributePanel").style.display="none";
