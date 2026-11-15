@@ -1,1 +1,346 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NBA GM Simulator</title>
+
+<style>
+:root {
+  --bg: #090d16;
+  --panel: #121a29;
+  --panel2: #192438;
+  --blue: #2878ff;
+  --text: #f4f6fb;
+  --muted: #94a3b8;
+  --border: #26344a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+header {
+  background: #0d1421;
+  border-bottom: 1px solid var(--border);
+  padding: 17px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.brand { font-size: 23px; font-weight: 900; letter-spacing: -1px; }
+.brand span { color: var(--blue); }
+.season {
+  color: var(--muted);
+  font-size: 12px;
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 20px;
+}
+main { max-width: 1250px; margin: auto; padding: 28px 5%; }
+.hero {
+  background: linear-gradient(120deg,#142c50,#101827 65%,#17243a);
+  border: 1px solid #29466e;
+  border-radius: 18px;
+  padding: 34px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.hero:after {
+  content: "NBA";
+  position: absolute;
+  right: 25px;
+  top: 15px;
+  font-size: 100px;
+  font-weight: 900;
+  color: #ffffff0a;
+}
+.eyebrow {
+  color: #77aaff;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+h1 { font-size: clamp(30px,5vw,48px); margin: 12px 0; }
+.hero p { color: #c2d0e3; max-width: 570px; line-height: 1.6; }
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 30px 0 17px;
+}
+h2 { font-size: 20px; margin: 0; }
+.count { color: var(--muted); font-size: 12px; }
+.filters { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 18px; }
+button {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 9px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: bold;
+}
+button:hover { border-color: var(--blue); }
+button.active { background: var(--blue); border-color: var(--blue); }
+.teams {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(155px,1fr));
+  gap: 12px;
+}
+.team {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: .18s;
+  min-height: 130px;
+}
+.team:hover { transform: translateY(-3px); border-color: var(--blue); }
+.team.selected { border: 2px solid var(--blue); background: #14294a; }
+.team-logo {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-weight: 900;
+  font-size: 15px;
+  color: white;
+  background: var(--team-color,#2878ff);
+}
+.team-name { font-size: 13px; font-weight: bold; line-height: 1.35; }
+.team-division { color: var(--muted); font-size: 10px; margin-top: 5px; }
+.selected-panel {
+  display: none;
+  background: linear-gradient(120deg,#172944,#111a29);
+  border: 1px solid #31517b;
+  border-radius: 16px;
+  padding: 23px;
+  margin-top: 25px;
+}
+.selected-panel.show { display: block; }
+.selected-heading { display:flex; align-items:center; gap:15px; }
+.selected-heading .team-logo { width:65px; height:65px; font-size:20px; margin:0; flex-shrink:0; }
+.selected-heading h2 { font-size:23px; }
+.selected-heading p { color:var(--muted); margin:6px 0 0; font-size:12px; }
+.start-button {
+  margin-top: 20px;
+  background: var(--blue);
+  border: 0;
+  padding: 13px 20px;
+}
+.notice {
+  margin-top: 25px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #101a2a;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+footer {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  text-align: center;
+  padding: 25px;
+  font-size: 11px;
+  margin-top: 45px;
+}
+@media(max-width:600px) {
+  header { padding: 14px 4%; }
+  .brand { font-size: 19px; }
+  main { padding: 20px 4%; }
+  .hero { padding: 25px 20px; }
+  .teams { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .season { font-size: 10px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand">NBA <span>GM</span></div>
+  <div class="season">TEMPORADA 2026-27</div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow">TU FRANQUICIA. TUS DECISIONES.</div>
+    <h1>Construye tu dinastía.</h1>
+    <p>
+      Conviértete en el General Manager de una franquicia NBA.
+      Gestiona tu plantilla, negocia traspasos, controla los contratos
+      y lucha por el campeonato.
+    </p>
+  </section>
+
+  <div class="section-title">
+    <h2>Selecciona tu franquicia</h2>
+    <span class="count" id="teamCount">30 equipos</span>
+  </div>
+
+  <div class="filters">
+    <button class="active" data-filter="All">Todos</button>
+    <button data-filter="East">Conferencia Este</button>
+    <button data-filter="West">Conferencia Oeste</button>
+  </div>
+
+  <section class="teams" id="teams"></section>
+
+  <section class="selected-panel" id="selectedPanel">
+    <div class="selected-heading">
+      <div class="team-logo" id="selectedLogo"></div>
+      <div>
+        <h2 id="selectedName"></h2>
+        <p id="selectedInfo"></p>
+      </div>
+    </div>
+    <button class="start-button" id="startButton">
+      SELECCIONAR ESTA FRANQUICIA →
+    </button>
+  </section>
+
+  <div class="notice">
+    <strong>PRÓXIMAMENTE:</strong> plantillas reales de inicio de temporada,
+    fotografías de los jugadores, contratos, salarios, traspasos,
+    simulación de partidos, Draft, agencia libre y temporadas guardadas.
+  </div>
+</main>
+
+<footer>
+  NBA GM SIMULATOR · PROYECTO EN DESARROLLO · TEMPORADA 2026-27
+</footer>
+
+<script>
+const teams = [
+  ["Boston Celtics","BOS","East","Atlantic","#008348"],
+  ["Brooklyn Nets","BKN","East","Atlantic","#222222"],
+  ["New York Knicks","NYK","East","Atlantic","#006bb6"],
+  ["Philadelphia 76ers","PHI","East","Atlantic","#006bb6"],
+  ["Toronto Raptors","TOR","East","Atlantic","#ce1141"],
+
+  ["Chicago Bulls","CHI","East","Central","#ce1141"],
+  ["Cleveland Cavaliers","CLE","East","Central","#860038"],
+  ["Detroit Pistons","DET","East","Central","#c8102e"],
+  ["Indiana Pacers","IND","East","Central","#002d62"],
+  ["Milwaukee Bucks","MIL","East","Central","#00471b"],
+
+  ["Atlanta Hawks","ATL","East","Southeast","#e03a3e"],
+  ["Charlotte Hornets","CHA","East","Southeast","#00788c"],
+  ["Miami Heat","MIA","East","Southeast","#98002e"],
+  ["Orlando Magic","ORL","East","Southeast","#0077c0"],
+  ["Washington Wizards","WAS","East","Southeast","#002b5c"],
+
+  ["Denver Nuggets","DEN","West","Northwest","#0e2240"],
+  ["Minnesota Timberwolves","MIN","West","Northwest","#0c2340"],
+  ["Oklahoma City Thunder","OKC","West","Northwest","#007ac1"],
+  ["Portland Trail Blazers","POR","West","Northwest","#e03a3e"],
+  ["Utah Jazz","UTA","West","Northwest","#002b5c"],
+
+  ["Golden State Warriors","GSW","West","Pacific","#1d428a"],
+  ["LA Clippers","LAC","West","Pacific","#c8102e"],
+  ["Los Angeles Lakers","LAL","West","Pacific","#552583"],
+  ["Phoenix Suns","PHX","West","Pacific","#1d1160"],
+  ["Sacramento Kings","SAC","West","Pacific","#5a2d81"],
+
+  ["Dallas Mavericks","DAL","West","Southwest","#00538c"],
+  ["Houston Rockets","HOU","West","Southwest","#ce1141"],
+  ["Memphis Grizzlies","MEM","West","Southwest","#5d76a9"],
+  ["New Orleans Pelicans","NOP","West","Southwest","#0c2340"],
+  ["San Antonio Spurs","SAS","West","Southwest","#555555"]
+];
+
+let selectedTeam = null;
+let currentFilter = "All";
+
+const teamsContainer = document.getElementById("teams");
+const panel = document.getElementById("selectedPanel");
+
+function renderTeams() {
+  teamsContainer.innerHTML = "";
+
+  const filtered = teams.filter(team =>
+    currentFilter === "All" || team[2] === currentFilter
+  );
+
+  document.getElementById("teamCount").textContent =
+    filtered.length + (filtered.length === 1 ? " equipo" : " equipos");
+
+  filtered.forEach(team => {
+    const card = document.createElement("div");
+    card.className = "team" +
+      (selectedTeam && selectedTeam[1] === team[1] ? " selected" : "");
+
+    const logo = document.createElement("div");
+    logo.className = "team-logo";
+    logo.style.setProperty("--team-color", team[4]);
+    logo.textContent = team[1];
+
+    const name = document.createElement("div");
+    name.className = "team-name";
+    name.textContent = team[0];
+
+    const division = document.createElement("div");
+    division.className = "team-division";
+    division.textContent =
+      (team[2] === "East" ? "Este" : "Oeste") + " · " + team[3];
+
+    card.append(logo, name, division);
+    card.addEventListener("click", () => selectTeam(team));
+    teamsContainer.appendChild(card);
+  });
+}
+
+function selectTeam(team) {
+  selectedTeam = team;
+  document.getElementById("selectedLogo").textContent = team[1];
+  document.getElementById("selectedLogo").style.setProperty(
+    "--team-color", team[4]
+  );
+  document.getElementById("selectedName").textContent = team[0];
+  document.getElementById("selectedInfo").textContent =
+    (team[2] === "East" ? "Conferencia Este" : "Conferencia Oeste") +
+    " · División " + team[3];
+
+  panel.classList.add("show");
+  renderTeams();
+  panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+document.querySelectorAll("[data-filter]").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("[data-filter]").forEach(b =>
+      b.classList.remove("active")
+    );
+    button.classList.add("active");
+    currentFilter = button.dataset.filter;
+    renderTeams();
+  });
+});
+
+document.getElementById("startButton").addEventListener("click", () => {
+  if (!selectedTeam) return;
+  alert(
+    "¡Has seleccionado " + selectedTeam[0] +
+    "! La creación de la partida y la gestión de plantilla llegarán en la siguiente fase."
+  );
+});
+
+renderTeams();
+</script>
+</body>
+</html>
