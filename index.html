@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -128,6 +129,8 @@ main{padding:18px 4%}
 <thead>
 <tr>
 <th>JUGADOR</th>
+<th>SALARIO 2026-27</th>
+<th>EDAD</th>
 <th>POS</th>
 <th>ALTURA</th>
 <th>OVR</th>
@@ -153,14 +156,6 @@ main{padding:18px 4%}
 <p class="muted" id="saveStatus"></p>
 </section>
 
-<div class="notice">
-<strong>Nota:</strong> esta página consulta la tabla
-<code>nba2k27_player_ratings</code> de Supabase.
-Si aparece que no hay jugadores, significa que todavía no se han importado registros a esa tabla.
-La interfaz no inventa plantillas ni valoraciones.
-Las imágenes se muestran únicamente cuando existe una URL válida en
-<code>player_image_url</code>.
-</div>
 </main>
 
 <footer>NBA GM SIMULATOR · TEMPORADA 2026-27</footer>
@@ -314,7 +309,7 @@ async function loadRoster(team){
 
  try{
   const endpoint=SUPABASE_URL+
-   "/rest/v1/nba2k27_player_ratings?select=player_name,team_name,position,secondary_position,height,overall,potential_grade,attributes,archetype,player_image_url"+
+   "/rest/v1/nba2k27_player_ratings?select=player_name,team_name,position,secondary_position,height,overall,potential_grade,attributes,archetype,player_image_url,age"+
    "&team_name=eq."+encodeURIComponent(team.name)+
    "&season=eq.2026-27&order=overall.desc";
 
@@ -353,7 +348,15 @@ async function loadRoster(team){
 
    name.appendChild(document.createTextNode(player.player_name||"Jugador"));
 
+   const salary=player.attributes?.salary_usd_2026_27;
+   const salaryNote=player.attributes?.salary_note;
+   const salaryText=salary!=null
+    ? "$"+Number(salary).toLocaleString("en-US")
+    : salaryNote?.includes("Two-Way") ? "Two-Way" : "—";
+
    const values=[
+    salaryText,
+    player.age??"—",
     player.position||"—",
     player.height||"—",
     player.overall??"—",
@@ -366,7 +369,7 @@ async function loadRoster(team){
    values.forEach((value,i)=>{
     const td=document.createElement("td");
     td.textContent=value;
-    if(i===2)td.className="ovr";
+    if(i===4)td.className="ovr";
     tr.appendChild(td);
    });
 
