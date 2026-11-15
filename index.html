@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -63,8 +64,6 @@ main{padding:18px 4%}
 .cards{grid-template-columns:1fr}
 .panel{padding:15px}
 }
-
-/* NUEVO: panel de inicio de carrera; conserva los estilos originales */
 .career-panel{display:none;margin-top:22px;background:linear-gradient(125deg,#172a45,#101a2a);border:1px solid #355780;border-radius:16px;padding:20px}
 .career-panel.show{display:block}
 .career-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:16px}
@@ -168,23 +167,23 @@ main{padding:18px 4%}
 </section>
 
 <section class="career-panel" id="careerPanel">
- <div class="eyebrow">MODO CARRERA · TEMPORADA 2026-27</div>
- <div class="detail-top" style="margin-top:10px">
-  <img class="detail-logo" id="careerLogo" alt="Logo de la franquicia">
-  <div><h2 id="careerName"></h2><p class="muted" id="careerConference"></p></div>
- </div>
- <div class="career-goal"><strong>OBJETIVO DE LA DIRECTIVA</strong><div id="careerGoal" style="margin-top:6px"></div></div>
- <div class="career-grid">
-  <div class="career-stat"><small>EXIGENCIA</small><strong id="careerPressure">—</strong></div>
-  <div class="career-stat"><small>META DE TEMPORADA</small><strong id="careerTarget">—</strong></div>
-  <div class="career-stat"><small>CONFIANZA INICIAL</small><strong>75 / 100</strong></div>
-  <div class="career-stat"><small>TEMPORADA</small><strong>2026-27</strong></div>
- </div>
- <div class="career-actions">
-  <button class="primary" id="careerViewRoster">Ver plantilla</button>
-  <button id="careerBack">Elegir otro equipo</button>
- </div>
- <p class="muted" style="margin-top:15px">La franquicia quedó seleccionada y guardada en este dispositivo. El calendario, la simulación de partidos, la clasificación y los playoffs se incorporarán en la siguiente etapa.</p>
+<div class="eyebrow">MODO CARRERA · TEMPORADA 2026-27</div>
+<div class="detail-top" style="margin-top:10px">
+<img class="detail-logo" id="careerLogo" alt="Logo de la franquicia">
+<div><h2 id="careerName"></h2><p class="muted" id="careerConference"></p></div>
+</div>
+<div class="career-goal"><strong>OBJETIVO DE LA DIRECTIVA</strong><div id="careerGoal" style="margin-top:6px"></div></div>
+<div class="career-grid">
+<div class="career-stat"><small>EXIGENCIA</small><strong id="careerPressure">—</strong></div>
+<div class="career-stat"><small>META DE TEMPORADA</small><strong id="careerTarget">—</strong></div>
+<div class="career-stat"><small>CONFIANZA INICIAL</small><strong>75 / 100</strong></div>
+<div class="career-stat"><small>TEMPORADA</small><strong>2026-27</strong></div>
+</div>
+<div class="career-actions">
+<button class="primary" id="careerViewRoster">Ver plantilla</button>
+<button id="careerBack">Elegir otro equipo</button>
+</div>
+<p class="muted" style="margin-top:15px">La franquicia quedó seleccionada y guardada en este dispositivo. El calendario, la simulación de partidos, la clasificación y los playoffs se incorporarán en la siguiente etapa.</p>
 </section>
 
 </main>
@@ -246,7 +245,6 @@ const teams = [
  stars:historicalStars[abbr]||1
 }));
 
-/* NUEVO: objetivos personalizados para las 30 franquicias */
 const franchiseGoals = {
  "Atlanta Hawks":["Media","Pelear por el play-in","Competir por un puesto en el play-in y seguir construyendo el equipo."],
  "Boston Celtics":["Muy alta","Finales de Conferencia","La directiva espera competir por el campeonato y llegar lejos en playoffs."],
@@ -289,52 +287,41 @@ const $ = id => document.getElementById(id);
 function logoUrl(team){
  if(team.abbr==="UTA")
   return "https://cdn.nba.com/logos/nba/1610612762/primary/L/logo.svg";
-
  return "https://a.espncdn.com/i/teamlogos/nba/500/"+team.logo+".png";
 }
 
 function renderTeams(){
  const q=$("search").value.trim().toLowerCase();
-
  const filtered=teams.filter(t=>
   (filter==="All"||t.conf===filter)&&
   (t.name.toLowerCase().includes(q)||t.abbr.toLowerCase().includes(q))
  );
-
  $("teams").innerHTML="";
  $("teamCount").textContent=filtered.length+" equipos";
-
  filtered.forEach(team=>{
   const card=document.createElement("article");
   card.className="team";
-
   const img=document.createElement("img");
   img.className="team-logo";
   img.src=logoUrl(team);
   img.alt=team.name;
   img.onerror=()=>{img.style.display="none";};
-
   const name=document.createElement("div");
   name.className="team-name";
   name.textContent=team.name;
-
   const conf=document.createElement("div");
   conf.className="team-conf";
   conf.textContent=(team.conf==="East"?"Conferencia Este":"Conferencia Oeste")+" · "+team.division;
-
   const titles=document.createElement("div");
   titles.className="team-titles";
   titles.textContent=team.titles+" "+(team.titles===1?"campeonato":"campeonatos");
-
   const stars=document.createElement("div");
   stars.className="team-stars";
   stars.textContent="★".repeat(team.stars)+"☆".repeat(5-team.stars);
   stars.setAttribute("aria-label",team.stars+" de 5 estrellas de valor histórico");
-
   const starsLabel=document.createElement("div");
   starsLabel.className="team-stars-label";
   starsLabel.textContent="VALOR HISTÓRICO";
-
   card.append(img,name,conf,titles,stars,starsLabel);
   card.onclick=()=>selectTeam(team);
   $("teams").appendChild(card);
@@ -344,18 +331,15 @@ function renderTeams(){
 async function selectTeam(team){
  selectedTeam=team;
  selectedPlayer=null;
-
  $("teamPanel").classList.add("show");
  $("detailLogo").src=logoUrl(team);
  $("detailLogo").style.display="";
  $("detailName").textContent=team.name;
-
  $("detailMeta").textContent=
   (team.conf==="East"?"Conferencia Este":"Conferencia Oeste")+
   " · División "+team.division+
   " · "+team.titles+" "+(team.titles===1?"campeonato":"campeonatos")+
   " · "+team.stars+"/5 estrellas históricas";
-
  $("detailHistory").textContent=team.history;
  $("detailDNA").textContent=team.dna;
  $("attributePanel").style.display="none";
@@ -363,45 +347,35 @@ async function selectTeam(team){
  $("rosterStatus").textContent="Buscando jugadores de "+team.name+"...";
  $("rosterCount").textContent="Cargando";
  $("saveStatus").textContent="";
-
  $("teamPanel").scrollIntoView({behavior:"smooth",block:"start"});
-
  await loadRoster(team);
 }
 
 async function loadRoster(team){
  const body=$("rosterBody");
-
  try{
   const endpoint=SUPABASE_URL+
    "/rest/v1/nba2k27_player_ratings?select=player_name,team_name,position,secondary_position,height,overall,potential_grade,attributes,archetype,player_image_url,age"+
    "&team_name=eq."+encodeURIComponent(team.name)+
    "&season=eq.2026-27&order=overall.desc";
-
   const response=await fetch(endpoint,{
    headers:{
     apikey:SUPABASE_KEY,
     Authorization:"Bearer "+SUPABASE_KEY
    }
   });
-
   if(!response.ok)throw new Error("HTTP "+response.status);
-
   const players=await response.json();
-
   if(!players.length){
    $("rosterStatus").textContent="No hay jugadores cargados para "+team.name+" en la tabla nba2k27_player_ratings. La conexión funciona, pero faltan los datos.";
    $("rosterCount").textContent="0 jugadores";
    return;
   }
-
   $("rosterStatus").textContent="Selecciona un jugador para consultar sus atributos completos.";
   $("rosterCount").textContent=players.length+" jugadores";
-
   players.forEach(player=>{
    const tr=document.createElement("tr");
    const name=document.createElement("td");
-
    if(player.player_image_url){
     const img=document.createElement("img");
     img.src=player.player_image_url;
@@ -410,15 +384,12 @@ async function loadRoster(team){
     img.onerror=()=>img.style.display="none";
     name.appendChild(img);
    }
-
    name.appendChild(document.createTextNode(player.player_name||"Jugador"));
-
    const salary=player.attributes?.salary_usd_2026_27;
    const salaryNote=player.attributes?.salary_note;
    const salaryText=salary!=null
     ? "$"+Number(salary).toLocaleString("en-US")
     : salaryNote?.includes("Two-Way") ? "Two-Way" : "—";
-
    const values=[
     salaryText,
     player.age??"—",
@@ -428,21 +399,17 @@ async function loadRoster(team){
     player.potential_grade||"—",
     player.archetype||"—"
    ];
-
    tr.appendChild(name);
-
    values.forEach((value,i)=>{
     const td=document.createElement("td");
     td.textContent=value;
     if(i===4)td.className="ovr";
     tr.appendChild(td);
    });
-
    tr.style.cursor="pointer";
    tr.onclick=()=>showAttributes(player);
    body.appendChild(tr);
   });
-
  }catch(error){
   console.error(error);
   $("rosterStatus").textContent="Error al conectar con Supabase ("+error.message+"). Revisa URL, clave y permisos de lectura.";
@@ -450,21 +417,16 @@ async function loadRoster(team){
  }
 }
 
-/* NUEVO: iniciar la carrera con la franquicia seleccionada */
 function startCareer(){
  if(!selectedTeam){alert("Primero selecciona una franquicia.");return;}
-
  const goal=franchiseGoals[selectedTeam.name]||["Media","Competir","Construir una temporada competitiva."];
-
  $("careerLogo").src=logoUrl(selectedTeam);
  $("careerName").textContent=selectedTeam.name;
  $("careerConference").textContent=(selectedTeam.conf==="East"?"Conferencia Este":"Conferencia Oeste")+" · División "+selectedTeam.division;
  $("careerPressure").textContent=goal[0];
  $("careerTarget").textContent=goal[1];
  $("careerGoal").textContent=goal[2];
-
  $("careerPanel").classList.add("show");
-
  try{
   localStorage.setItem("nbaGM_career",JSON.stringify({
    teamName:selectedTeam.name,
@@ -478,38 +440,29 @@ function startCareer(){
    confidence:75
   }));
  }catch(e){}
-
  $("careerPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 function showAttributes(player){
  selectedPlayer=player;
  $("attributePanel").style.display="block";
-
  $("attributePlayer").textContent=
   player.player_name+" · OVR "+player.overall+" · "+
   (player.archetype||"Arquetipo no indicado");
-
  const list=$("attributeList");
  list.innerHTML="";
-
  const attrs=player.attributes||{};
-
  if(typeof attrs!=="object"||Array.isArray(attrs)||!Object.keys(attrs).length){
   list.textContent="Este registro todavía no contiene atributos individuales.";
   return;
  }
-
  Object.entries(attrs).forEach(([key,value])=>{
   const item=document.createElement("div");
   item.className="attr";
-
   const k=document.createElement("span");
   k.textContent=key.replaceAll("_"," ");
-
   const v=document.createElement("strong");
   v.textContent=value;
-
   item.append(k,v);
   list.appendChild(item);
  });
@@ -525,8 +478,6 @@ document.querySelectorAll(".filter").forEach(btn=>{
 });
 
 $("search").addEventListener("input",renderTeams);
-
-/* NUEVO: botones del modo carrera */
 $("startCareer").onclick=startCareer;
 
 $("careerViewRoster").onclick=()=>{
@@ -548,7 +499,6 @@ $("hideTeam").onclick=()=>{
 
 $("saveTeam").onclick=()=>{
  if(!selectedTeam)return;
-
  try{
   localStorage.setItem("nbaGM_selectedTeam",JSON.stringify({
    teamName:selectedTeam.name,
@@ -557,9 +507,7 @@ $("saveTeam").onclick=()=>{
    division:selectedTeam.division,
    selectedAt:new Date().toISOString()
   }));
-
   $("saveStatus").textContent="Franquicia guardada en este dispositivo: "+selectedTeam.name;
-
  }catch(e){
   $("saveStatus").textContent="No se pudo guardar en este navegador.";
  }
